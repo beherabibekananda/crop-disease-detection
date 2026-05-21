@@ -36,7 +36,7 @@ function Dashboard() {
             Diagnose crop disease in seconds, get treatment plans grounded in research, and stay ahead of weather-driven risk — all in one calm workspace.
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
-            <Link to="/detection" className="inline-flex items-center gap-2 rounded-full bg-white text-primary px-5 py-2.5 text-sm font-medium hover:bg-white/90 transition-colors">
+            <Link to="/detection" className="inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-5 py-2.5 text-sm font-medium hover:bg-primary/90 transition-colors">
               <ScanLine className="size-4" /> Start a Scan <ArrowRight className="size-4" />
             </Link>
             <Link to="/agronomist" className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur border border-white/20 px-5 py-2.5 text-sm font-medium hover:bg-white/20">

@@ -26,11 +26,11 @@ function Agronomist() {
             </div>
             <div className="mt-4 font-semibold">How I can help</div>
             <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-              {[
+              {([
                 ["Diagnose", "From a description or image", Leaf],
                 ["Treat", "Step-by-step protocols", BookOpen],
                 ["Prevent", "Field hygiene & rotation", Lightbulb],
-              ].map(([t, d, I]) => {
+              ] as const).map(([t, d, I]) => {
                 const Icon = I as React.ComponentType<{ className?: string }>;
                 return (
                   <li key={t as string} className="flex gap-3">

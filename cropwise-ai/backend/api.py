@@ -106,7 +106,18 @@ async def predict_disease(request: ImageRequest):
           "prevention": ["step 1", "step 2", "step 3"],
           "causes": ["cause 1", "cause 2"]
         }
-        If it's not a plant leaf, return crop: "Unknown" and disease: "Not a Leaf".
+        CRITICAL: If the image does not show a plant leaf (e.g., it is a person, animal, object, landscape, or any non-leaf image), you MUST return EXACTLY:
+        {
+          "crop": "Unknown",
+          "disease": "Not a Leaf",
+          "confidence": 99.9,
+          "severity": "low",
+          "description": "",
+          "treatment": [],
+          "prevention": [],
+          "causes": []
+        }
+        Do not provide any description or details about the image if it is not a plant leaf.
         """
         
         # Prepare image for Gemini (handle URL or base64)
@@ -148,6 +159,20 @@ async def predict_disease(request: ImageRequest):
                 "prevention": ["N/A"],
                 "causes": ["N/A"]
             }
+
+        # Programmatically override values if detected as not a leaf, to ensure no description is returned
+        is_not_leaf = (
+            str(ai_data.get("disease", "")).strip().lower() == "not a leaf" or
+            str(ai_data.get("crop", "")).strip().lower() == "unknown"
+        )
+        if is_not_leaf:
+            ai_data["disease"] = "Not a Leaf"
+            ai_data["crop"] = "Unknown"
+            ai_data["description"] = ""
+            ai_data["treatment"] = []
+            ai_data["prevention"] = []
+            ai_data["causes"] = []
+            ai_data["severity"] = "low"
         
         # 3. Final Merged Result
         return {

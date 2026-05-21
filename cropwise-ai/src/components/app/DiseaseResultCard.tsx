@@ -29,14 +29,25 @@ export function DiseaseResultCard({ imageUrl, prediction, onReset }: Props) {
       <div className="lg:col-span-2 glass-strong rounded-3xl p-3 overflow-hidden">
         <div className="relative aspect-square rounded-2xl overflow-hidden">
           <img src={imageUrl} alt={prediction.disease} className="absolute inset-0 size-full object-cover" />
-          <div className={cn("absolute top-3 left-3 px-3 py-1.5 rounded-full text-xs font-medium border backdrop-blur-md", sev.color)}>
-            <SevIcon className="size-3.5 inline mr-1.5 -mt-0.5" />
-            {sev.label}
+          <div className={cn("absolute top-3 left-3 px-3 py-1.5 rounded-full text-xs font-medium border backdrop-blur-md", prediction.disease === "Not a Leaf" ? "bg-destructive/15 text-destructive border-destructive/30" : sev.color)}>
+            {prediction.disease === "Not a Leaf" ? (
+              <>
+                <AlertTriangle className="size-3.5 inline mr-1.5 -mt-0.5" />
+                Invalid Image
+              </>
+            ) : (
+              <>
+                <SevIcon className="size-3.5 inline mr-1.5 -mt-0.5" />
+                {sev.label}
+              </>
+            )}
           </div>
         </div>
         <div className="px-3 py-4">
           <div className="text-xs uppercase tracking-widest text-muted-foreground">Detected on</div>
-          <div className="font-medium">{prediction.crop} leaf · sample.jpg</div>
+          <div className="font-medium">
+            {prediction.disease === "Not a Leaf" ? "Non-leaf image" : `${prediction.crop} leaf`} · sample.jpg
+          </div>
         </div>
       </div>
 
@@ -45,7 +56,9 @@ export function DiseaseResultCard({ imageUrl, prediction, onReset }: Props) {
           <div>
             <div className="text-xs uppercase tracking-widest text-primary-glow font-medium">Diagnosis</div>
             <h2 className="text-3xl font-semibold tracking-tight mt-1">{prediction.disease}</h2>
-            <p className="text-sm text-muted-foreground mt-2 max-w-xl">{prediction.description}</p>
+            {prediction.description && (
+              <p className="text-sm text-muted-foreground mt-2 max-w-xl">{prediction.description}</p>
+            )}
           </div>
         </div>
 
@@ -65,16 +78,30 @@ export function DiseaseResultCard({ imageUrl, prediction, onReset }: Props) {
           </div>
         </div>
 
-        <div className="mt-6 grid sm:grid-cols-3 gap-3">
-          <ResultBlock icon={Sprout} title="Treatment" items={prediction.treatment} />
-          <ResultBlock icon={ShieldCheck} title="Prevention" items={prediction.prevention} />
-          <ResultBlock icon={Wind} title="Conditions" items={prediction.causes} />
-        </div>
+        {prediction.disease !== "Not a Leaf" ? (
+          <div className="mt-6 grid sm:grid-cols-3 gap-3">
+            <ResultBlock icon={Sprout} title="Treatment" items={prediction.treatment} />
+            <ResultBlock icon={ShieldCheck} title="Prevention" items={prediction.prevention} />
+            <ResultBlock icon={Wind} title="Conditions" items={prediction.causes} />
+          </div>
+        ) : (
+          <div className="mt-6 p-4 rounded-2xl border border-destructive/20 bg-destructive/5 flex items-start gap-3">
+            <AlertTriangle className="size-5 text-destructive shrink-0 mt-0.5" />
+            <div>
+              <div className="text-sm font-semibold text-destructive">Image Verification Failed</div>
+              <div className="text-xs text-muted-foreground mt-1">
+                The uploaded image does not appear to be a plant leaf. CropSense AI only diagnoses valid plant leaf images. Please upload a clear photo of a crop leaf.
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="mt-6 flex flex-wrap gap-3">
-          <button className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium gradient-hero text-primary-foreground shadow-glow">
-            <Download className="size-4" /> Download PDF Report
-          </button>
+          {prediction.disease !== "Not a Leaf" && (
+            <button className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium gradient-hero text-primary-foreground shadow-glow">
+              <Download className="size-4" /> Download PDF Report
+            </button>
+          )}
           <button onClick={onReset} className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium glass hover:bg-accent/60">
             <RefreshCw className="size-4" /> Analyze Another
           </button>
