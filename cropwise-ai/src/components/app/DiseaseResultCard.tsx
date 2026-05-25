@@ -46,7 +46,7 @@ export function DiseaseResultCard({ imageUrl, prediction, onReset }: Props) {
         <div className="px-3 py-4">
           <div className="text-xs uppercase tracking-widest text-muted-foreground">Detected on</div>
           <div className="font-medium">
-            {prediction.disease === "Not a Leaf" ? "Non-leaf image" : `${prediction.crop} leaf`} · sample.jpg
+            {prediction.disease === "Not a Leaf" ? "Non-plant image" : `${prediction.crop}`} · sample.jpg
           </div>
         </div>
       </div>
@@ -90,7 +90,7 @@ export function DiseaseResultCard({ imageUrl, prediction, onReset }: Props) {
             <div>
               <div className="text-sm font-semibold text-destructive">Image Verification Failed</div>
               <div className="text-xs text-muted-foreground mt-1">
-                The uploaded image does not appear to be a plant leaf. CropSense AI only diagnoses valid plant leaf images. Please upload a clear photo of a crop leaf.
+                The uploaded image does not appear to be a plant or crop. CropSense AI diagnoses valid plant parts (leaves, fruits, stems, roots, flowers, etc.). Please upload a clear photo.
               </div>
             </div>
           </div>

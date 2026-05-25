@@ -90,23 +90,31 @@ async def predict_disease(request: ImageRequest):
         # 2. Call Gemini for Expert Analysis & Verification
         print("🤖 Calling Gemini AI for expert validation...")
         prompt = """
-        Analyze this plant leaf image. 
-        1. Identify the EXACT crop name (e.g., Tulsi, Mango, Tomato, Rice, etc.).
-        2. Diagnose any diseases or pests present.
-        3. Provide a treatment and prevention plan.
+        Analyze this plant image (can show a leaf, fruit, stem, root, flower, seed, or the whole crop/plant).
+        This system supports all kinds of plants, including:
+        - Field Crops (e.g., Rice, Wheat, Maize, Cotton, Soybean, Sugarcane)
+        - Vegetables (e.g., Tomato, Potato, Chili, Onion, Cabbage, Brinjal, Okra, Cucumber)
+        - Fruits (e.g., Mango, Apple, Banana, Citrus, Grape, Guava, Papaya, Pomegranate)
+        - Herbs, Spices, and Ornamentals
+
+        Tasks:
+        1. Identify the EXACT plant/crop name (e.g., Mango, Tomato, Rice, Apple, etc.). If the exact variety/species is difficult to determine but it is clearly a plant or crop, guess the general category or family (e.g., "Citrus", "Cucurbit", "Crucifer", or "Unknown Plant") instead of "Unknown".
+        2. Diagnose any diseases, fungal/bacterial/viral infections, rot, spots, cankers, nutrient deficiencies, or pest damage present on any part of the plant (leaf, fruit, stem, etc.).
+        3. Provide a clear, actionable treatment and prevention plan.
 
         Return ONLY a JSON object with this exact structure:
         {
-          "crop": "Exact name of the plant",
-          "disease": "Name of the disease (or 'Healthy')",
+          "crop": "Name of the crop/plant",
+          "disease": "Name of the disease/pest (or 'Healthy')",
           "confidence": 95.5,
           "severity": "low/moderate/high",
-          "description": "Short medical-style description of symptoms",
+          "description": "Short medical-style description of symptoms seen on the leaf, fruit, stem, or plant",
           "treatment": ["step 1", "step 2", "step 3"],
           "prevention": ["step 1", "step 2", "step 3"],
           "causes": ["cause 1", "cause 2"]
         }
-        CRITICAL: If the image does not show a plant leaf (e.g., it is a person, animal, object, landscape, or any non-leaf image), you MUST return EXACTLY:
+
+        CRITICAL: If the image does not show a plant or crop part at all (e.g., it is a person, animal, object, landscape, building, or any non-plant image), you MUST return EXACTLY:
         {
           "crop": "Unknown",
           "disease": "Not a Leaf",
@@ -117,7 +125,7 @@ async def predict_disease(request: ImageRequest):
           "prevention": [],
           "causes": []
         }
-        Do not provide any description or details about the image if it is not a plant leaf.
+        Do not provide any description or details about the image if it does not show a plant or crop.
         """
         
         # Prepare image for Gemini (handle URL or base64)
@@ -160,10 +168,9 @@ async def predict_disease(request: ImageRequest):
                 "causes": ["N/A"]
             }
 
-        # Programmatically override values if detected as not a leaf, to ensure no description is returned
+        # Programmatically override values only if explicitly detected as not a leaf
         is_not_leaf = (
-            str(ai_data.get("disease", "")).strip().lower() == "not a leaf" or
-            str(ai_data.get("crop", "")).strip().lower() == "unknown"
+            str(ai_data.get("disease", "")).strip().lower() == "not a leaf"
         )
         if is_not_leaf:
             ai_data["disease"] = "Not a Leaf"
