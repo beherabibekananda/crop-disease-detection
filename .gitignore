@@ -10,7 +10,12 @@ build/
 .next/
 .turbo/
 .cache/
-Project/node_modules/
-Project/dist/
-Project/backend/__pycache__/
-Project/ml-pipeline/__pycache__/
+.vite/
+.wrangler/
+Project/
+Source Code : Program/node_modules/
+Source Code : Program/dist/
+Source Code : Program/.vite/
+Source Code : Program/.wrangler/
+Source Code : Program/backend/__pycache__/
+Source Code : Program/ml-pipeline/__pycache__/
