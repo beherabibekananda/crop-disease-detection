@@ -1,0 +1,38 @@
+Software Requirements Specification
+==================================
+
+This document lists the system and library requirements to compile, build, and run the CropSense AI web application.
+
+1. System Requirements
+---------------------
+- Operating System: Windows 10/11, macOS (v12 or higher), or Linux (Ubuntu 20.04+)
+- Node.js: v18.0.0 or higher
+- npm: v9.0.0 or higher
+- Python: v3.10 or higher
+- Browser: Modern Web Browser (Chrome, Safari, Firefox, Edge) with JavaScript enabled
+
+2. Backend Python Libraries
+--------------------------
+The FastAPI server requires the following libraries:
+- fastapi: For building the API endpoints
+- uvicorn: ASGI web server to run the FastAPI app
+- pillow (PIL): For image decoding and resizing
+- pydantic: For request payload validation
+- python-dotenv: For loading API keys from the .env file
+- requests: For making API calls to Gemini and external services
+
+Optional (for local ML validation):
+- tensorflow: For loading and running the Keras model (.keras)
+- numpy: For array manipulation and model output processing
+
+3. Frontend Node.js Dependencies
+-------------------------------
+The React client uses the following packages (installed via npm install):
+- @tanstack/react-start: Full-stack routing framework
+- react & react-dom (v19): Component library
+- tailwindcss (v4): Styling framework
+- framer-motion: Component animations
+- lucide-react: Vector iconography
+- @tanstack/react-query: Server state manager
+- zod: Client-side validation
+- sonner: Toast notification system

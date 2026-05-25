@@ -10,6 +10,7 @@ build/
 .next/
 .turbo/
 .cache/
-cropwise-ai/node_modules/
-cropwise-ai/dist/
-backend/__pycache__/
+Project/node_modules/
+Project/dist/
+Project/backend/__pycache__/
+Project/ml-pipeline/__pycache__/

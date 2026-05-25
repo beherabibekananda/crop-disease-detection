@@ -1,0 +1,45 @@
+Python Setup Guide for CropSense AI
+====================================
+
+Follow these steps to set up the Python environment and run the backend API server.
+
+1. Install Python
+   - Download and install Python (version 3.10 or higher) from the official website: https://www.python.org/
+   - Ensure the option "Add Python to PATH" is checked during installation.
+
+2. Navigate to the Project Directory
+   Open your terminal (macOS/Linux) or Command Prompt (Windows) and go to the project directory:
+   cd "/Users/bibekanandabehera/Desktop/Robust Crop ML/Project"
+
+3. Create a Virtual Environment (Recommended)
+   This keeps the project dependencies isolated from other Python packages on your computer.
+   - On macOS/Linux:
+     python3 -m venv venv
+   - On Windows:
+     python -m venv venv
+
+4. Activate the Virtual Environment
+   - On macOS/Linux:
+     source venv/bin/activate
+   - On Windows (PowerShell):
+     .\venv\Scripts\Activate.ps1
+   - On Windows (Command Prompt):
+     .\venv\Scripts\activate.bat
+
+5. Install Dependencies
+   Use pip to install all required libraries:
+   pip install fastapi uvicorn pillow pydantic python-dotenv requests
+
+   Optional: If you want local ML ensemble model validation, run:
+   pip install tensorflow numpy
+
+6. Set Up your Gemini API Key
+   - Create a file named `.env` in the `Project` directory.
+   - Add your Gemini API key inside it:
+     GEMINI_API_KEY=your_gemini_api_key_here
+
+7. Start the FastAPI Server
+   Run the backend api.py file:
+   python backend/api.py
+
+   The server will start running on http://localhost:8000.
