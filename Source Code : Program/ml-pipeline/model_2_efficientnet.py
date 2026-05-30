@@ -16,8 +16,36 @@ drive.mount('/content/drive')
 
 # 2. Setup Dataset Path
 dataset_path = "/content/drive/MyDrive/dataset/New Plant Diseases Dataset(Augmented)/New Plant Diseases Dataset(Augmented)"
-train_path = os.path.join(dataset_path, "train")
-val_path = os.path.join(dataset_path, "valid")
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+
+print("Collecting dataset files for random 80/10/10 split...")
+all_data = []
+for folder in ["train", "valid"]:
+    folder_path = os.path.join(dataset_path, folder)
+    if not os.path.exists(folder_path):
+        continue
+    for class_name in sorted(os.listdir(folder_path)):
+        class_dir = os.path.join(folder_path, class_name)
+        if not os.path.isdir(class_dir):
+            continue
+        for img_name in os.listdir(class_dir):
+            if img_name.lower().endswith(('.png', '.jpg', '.jpeg', '.bmp', '.gif')):
+                all_data.append({
+                    'filepath': os.path.join(class_dir, img_name),
+                    'label': class_name
+                })
+
+df = pd.DataFrame(all_data)
+train_df, temp_df = train_test_split(df, test_size=0.20, random_state=42, stratify=df['label'])
+val_df, test_df = train_test_split(temp_df, test_size=0.50, random_state=42, stratify=temp_df['label'])
+
+print(f"Dataset split summary:")
+print(f"  Total images: {len(df)}")
+print(f"  Train set (80%): {len(train_df)}")
+print(f"  Validation set (10%): {len(val_df)}")
+print(f"  Test set (10%): {len(test_df)}")
 
 # 3. Data Generators
 train_datagen = ImageDataGenerator(
@@ -31,16 +59,31 @@ train_datagen = ImageDataGenerator(
 )
 
 val_datagen = ImageDataGenerator(rescale=1./255)
+test_datagen = ImageDataGenerator(rescale=1./255)
 
-train_data = train_datagen.flow_from_directory(
-    train_path,
+train_data = train_datagen.flow_from_dataframe(
+    train_df,
+    x_col='filepath',
+    y_col='label',
     target_size=(224,224),
     batch_size=32,
     class_mode='categorical'
 )
 
-val_data = val_datagen.flow_from_directory(
-    val_path,
+val_data = val_datagen.flow_from_dataframe(
+    val_df,
+    x_col='filepath',
+    y_col='label',
+    target_size=(224,224),
+    batch_size=32,
+    class_mode='categorical',
+    shuffle=False
+)
+
+test_data = test_datagen.flow_from_dataframe(
+    test_df,
+    x_col='filepath',
+    y_col='label',
     target_size=(224,224),
     batch_size=32,
     class_mode='categorical',

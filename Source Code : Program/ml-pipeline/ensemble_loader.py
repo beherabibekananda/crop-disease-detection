@@ -6,19 +6,42 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.models import load_model
 
 # 1. Dataset Preparation
-dataset_path = "/content/drive/MyDrive/CropDiseaseDetection/dataset/PlantVillage"
+dataset_path = "/content/drive/MyDrive/dataset/New Plant Diseases Dataset(Augmented)/New Plant Diseases Dataset(Augmented)"
 
-datagen = ImageDataGenerator(
-    rescale=1./255,
-    # No data augmentation for validation/test data!
-)
+import pandas as pd
+from sklearn.model_selection import train_test_split
 
-val_data = datagen.flow_from_directory(
-    dataset_path,
+print("Collecting dataset files for random 80/10/10 split...")
+all_data = []
+for folder in ["train", "valid"]:
+    folder_path = os.path.join(dataset_path, folder)
+    if not os.path.exists(folder_path):
+        continue
+    for class_name in sorted(os.listdir(folder_path)):
+        class_dir = os.path.join(folder_path, class_name)
+        if not os.path.isdir(class_dir):
+            continue
+        for img_name in os.listdir(class_dir):
+            if img_name.lower().endswith(('.png', '.jpg', '.jpeg', '.bmp', '.gif')):
+                all_data.append({
+                    'filepath': os.path.join(class_dir, img_name),
+                    'label': class_name
+                })
+
+df = pd.DataFrame(all_data)
+train_df, temp_df = train_test_split(df, test_size=0.20, random_state=42, stratify=df['label'])
+val_df, test_df = train_test_split(temp_df, test_size=0.50, random_state=42, stratify=temp_df['label'])
+
+# Use the 10% Test split for ensemble evaluation
+test_datagen = ImageDataGenerator(rescale=1./255)
+
+val_data = test_datagen.flow_from_dataframe(
+    test_df,
+    x_col='filepath',
+    y_col='label',
     target_size=(224,224),
     batch_size=32,
     class_mode='categorical',
-    subset='validation',
     shuffle=False # CRITICAL: Must be false to match true labels with predictions
 )
 

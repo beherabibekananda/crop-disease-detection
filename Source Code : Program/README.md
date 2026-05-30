@@ -25,6 +25,6 @@ Instead of relying on the strict classification (Hard Voting) of a single model,
 ## 🚀 Execution Guide (Google Colab)
 To run this pipeline, follow this strict execution order in Google Colab:
 1. **`setup_dataset_in_drive.py`**: Mounts Google Drive, authenticates the Kaggle API, downloads the 87k image dataset, and extracts it permanently to your Drive.
-2. **`model_1_vgg.py` to `model_4_alexnet.py`**: Run these 4 scripts individually. They pull the data from your Drive, train the respective models, and save the weights as `.keras` files.
+2. **`model_1_vgg.py` to `model_4_alexnet_custom.py`**: Run these 4 scripts individually. They pull the data, randomly partition it into stratified 80% training, 10% validation, and 10% testing sets using a fixed seed, train the respective models, and save the weights as `.keras` files.
 3. **`unified_ensemble_model.py`**: Loads the 4 saved models and physically merges them into a single Keras Functional API model (`best_ensemble_model.keras`).
-4. **`ensemble.py` (Evaluation):** Evaluates the models against the unseen validation dataset, generating a comparative metrics table and the ultimate Confusion Matrix.
+4. **`ensemble.py` (Evaluation):** Evaluates the models against the unseen 10% test split, generating a comparative metrics table and the ultimate Confusion Matrix.

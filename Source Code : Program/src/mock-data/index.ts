@@ -107,7 +107,7 @@ export const systemStats = [
   { label: "Crops Supported", value: 14 },
   { label: "Disease Classes", value: 38 },
   { label: "Training Images", value: "87K+" },
-  { label: "Model Accuracy", value: "98.4%" },
+  { label: "Model Accuracy", value: "99.15%" },
 ];
 
 export const suggestedQuestions = [

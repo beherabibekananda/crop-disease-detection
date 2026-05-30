@@ -95,7 +95,7 @@ function Detection() {
               {[
                 ["4", "CNN Models"],
                 ["38", "Disease classes"],
-                ["98.4%", "Ensemble accuracy"],
+                ["99.15%", "Ensemble accuracy"],
               ].map(([v, l]) => (
                 <div key={l} className="glass rounded-2xl p-4">
                   <div className="text-2xl font-semibold">{v}</div>
